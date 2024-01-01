@@ -24,6 +24,6 @@ object BoardView {
 
     private fun Cell.symbol() = when (this) {
         is Cell.Mine -> UNOPENED_SYMBOL
-        is Cell.Clear -> if (this.isOpened()) this.mineCount.value.toString() else UNOPENED_SYMBOL
+        is Cell.Clear -> if (this.isOpened) this.nearMineCount.value.toString() else UNOPENED_SYMBOL
     }
 }

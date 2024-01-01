@@ -4,34 +4,24 @@ import minesweeper.domain.position.Position
 
 sealed interface Cell {
     val position: Position
-    val adjacentPositions: Set<Position>
-
     data class Mine(
-        override val position: Position,
-    ) : Cell {
-        override val adjacentPositions: Set<Position> = position.adjacentPositions
-    }
+        override val position: Position
+    ) : Cell
 
     data class Clear(
         override val position: Position,
-        val mineCount: MineCount = MineCount.ZERO,
-        private var isOpened: Boolean = false
+        val nearMineCount: MineCount,
     ) : Cell {
-        override val adjacentPositions: Set<Position> = position.adjacentPositions
-        fun open(): Clear {
+        var isOpened: Boolean = false
+            private set
+
+        val nearPositions: Set<Position> = position.nearPositions
+
+        fun open() {
+            check(isOpened.not())
             isOpened = true
-            return this
         }
 
-        fun isOpened(): Boolean = isOpened
-
-        fun isZeroMineCount(): Boolean = mineCount == MineCount.ZERO
-    }
-
-    companion object {
-        fun ofClear(position: Position, mineCount: Int): Clear =
-            Clear(position, MineCount.from(mineCount))
-
-        fun ofMine(position: Position): Mine = Mine(position)
+        fun isMineCountZero(): Boolean = nearMineCount == MineCount.ZERO
     }
 }

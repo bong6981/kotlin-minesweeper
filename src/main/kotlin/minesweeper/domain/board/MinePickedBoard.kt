@@ -1,14 +1,14 @@
 package minesweeper.domain.board
 
 import minesweeper.domain.position.MinePositionPicker
-import minesweeper.domain.position.Position2
+import minesweeper.domain.position.Position
 
 class MinePickedBoard private constructor(
-    val allPositions: Set<Position2>,
-    val minePositions: Set<Position2>
+    val allPositions: Set<Position>,
+    val minePositions: Set<Position>
 ) {
 
-    val mineCountByAllPosition: Map<Position2, Int> by lazy {
+    val mineCountByAllPosition: Map<Position, Int> by lazy {
         val nearMineCountByPosition = minePositions
             .flatMap { it.nearPositions }
             .filter { it in allPositions }
@@ -18,7 +18,7 @@ class MinePickedBoard private constructor(
         allPositions.associateWith { nearMineCountByPosition[it] ?: 0 }
     }
 
-    fun isMine(position2: Position2) = position2 in minePositions
+    fun isMine(position: Position) = position in minePositions
 
     companion object {
         fun of(emptyBoard: EmptyBoard, minePicker: MinePositionPicker): MinePickedBoard {

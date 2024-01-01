@@ -1,8 +1,8 @@
 package minesweeper.domain.position
 
-import minesweeper.domain.board.MineTotal2
+import minesweeper.domain.board.MineTotal
 
 interface MinePositionPicker {
-    val mineCount: MineTotal2
-    fun pick(allPositions: Set<Position2>): Set<Position2>
+    val mineCount: MineTotal
+    fun pick(allPositions: Set<Position>): Set<Position>
 }

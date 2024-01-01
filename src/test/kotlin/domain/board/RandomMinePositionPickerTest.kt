@@ -4,22 +4,22 @@ import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldBeIn
 import io.kotest.matchers.shouldBe
-import minesweeper.domain.board.MineTotal2
-import minesweeper.domain.position.Position2
+import minesweeper.domain.board.MineTotal
+import minesweeper.domain.position.Position
 import minesweeper.domain.position.RandomMinePositionPicker
 
 class RandomMinePositionPickerTest : DescribeSpec({
     describe("랜덤 위치 선택") {
         context("전체 위치와 뽑아야 할 수가 주어지면") {
             val allPositions = setOf(
-                Position2(0, 0),
-                Position2(0, 1),
-                Position2(0, 2),
-                Position2(1, 0),
-                Position2(1, 1),
-                Position2(1, 2),
+                Position(0, 0),
+                Position(0, 1),
+                Position(0, 2),
+                Position(1, 0),
+                Position(1, 1),
+                Position(1, 2),
             )
-            val mineCount = MineTotal2(2)
+            val mineCount = MineTotal(2)
 
             val pickedPositions = RandomMinePositionPicker(mineCount).pick(allPositions)
 
@@ -36,12 +36,12 @@ class RandomMinePositionPickerTest : DescribeSpec({
 
         context("전체 위치보다 뽑아야 할 수가 많은 경우") {
             val allPositions = setOf(
-                Position2(0, 0),
-                Position2(0, 1),
-                Position2(1, 0),
-                Position2(1, 1),
+                Position(0, 0),
+                Position(0, 1),
+                Position(1, 0),
+                Position(1, 1),
             )
-            val mineCount = MineTotal2(5)
+            val mineCount = MineTotal(5)
 
             it("IllegalArgumentException이 발생한다") {
                 shouldThrowExactly<IllegalArgumentException> {

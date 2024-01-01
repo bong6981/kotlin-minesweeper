@@ -1,7 +1,7 @@
 package minesweeper.domain.board
 
 @JvmInline
-value class Width2(
+value class Width(
     val value: Int
 ) {
     init {

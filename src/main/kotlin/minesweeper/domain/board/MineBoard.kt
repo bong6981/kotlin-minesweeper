@@ -1,32 +1,40 @@
 package minesweeper.domain.board
 
 import minesweeper.domain.cell.Cell
+import minesweeper.domain.cell.CellsFactory
 import minesweeper.domain.position.Position
 
-data class MineBoard(
+class MineBoard private constructor(
     val cells: Map<Position, Cell>,
 ) {
     fun open(position: Position): Cell.Clear {
-        val cell = getCell(position)
-        check(cell is Cell.Clear)
-        return cell.open()
+        val cell = findCell(position)
+        check(cell is Cell.Clear) { "지뢰를 열수 없습니다" }
+        cell.open()
+        return cell
     }
 
     fun isMine(position: Position): Boolean =
-        getCell(position) is Cell.Mine
+        findCell(position) is Cell.Mine
 
-    fun isOpened(position: Position): Boolean {
-        val cell = getCell(position)
-        check(cell is Cell.Clear)
-        return cell.isOpened()
+    fun canOpen(position: Position): Boolean {
+        val cell = cells[position] ?: return false
+        return when (cell) {
+            is Cell.Mine -> false
+            is Cell.Clear -> cell.isOpened.not()
+        }
     }
 
-    fun isValidPosition(position: Position): Boolean =
-        cells[position] != null
-
     fun isAllOpened(): Boolean =
-        cells.values.none { it is Cell.Clear && it.isOpened().not() }
+        cells.values.none { it is Cell.Clear && it.isOpened.not() }
 
-    private fun getCell(position: Position): Cell = cells[position]
-        ?: throw IllegalArgumentException("보드에 정의된 위치가 아닙니다")
+    private fun findCell(position: Position): Cell =
+        cells[position] ?: throw IllegalArgumentException("보드 내에 정의된 셀이 아닙니다")
+
+    companion object {
+        fun from(minePickedBoard: MinePickedBoard): MineBoard {
+            val cells = CellsFactory.from(minePickedBoard)
+            return MineBoard(cells)
+        }
+    }
 }

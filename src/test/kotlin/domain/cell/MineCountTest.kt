@@ -18,14 +18,14 @@ class MineCountTest : StringSpec({
         7 to MineCount.SEVEN,
         8 to MineCount.EIGHT,
     ).forAll { (value, expectCount) ->
-        "인접한 지뢰 개수(${value}개)로 mineCount($expectCount) 조회" {
+        "인접한 지뢰 개수(${value}개)로 mineCount($expectCount) 생성" {
             val result = MineCount.from(value)
 
             result shouldBe expectCount
         }
     }
 
-    "1-8 의 범위를 넘어가면 조회 실패" {
+    "0-8 의 범위를 넘어가면 생성 실패" {
         shouldThrowExactly<IllegalArgumentException> {
             MineCount.from(10)
         }

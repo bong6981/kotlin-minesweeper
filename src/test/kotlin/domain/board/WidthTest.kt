@@ -6,25 +6,19 @@ import io.kotest.matchers.shouldBe
 import minesweeper.domain.board.Width
 
 class WidthTest : StringSpec({
-    "입력 받은 숫자로 너비 생성" {
-        val number = 5
+    "너비를 입력 받으면 해당 값을 가진 Width가 생성된다" {
+        val width = 3
 
-        val width = Width(number)
+        val result = Width(3)
 
-        width.value shouldBe number
+        result.value shouldBe width
     }
 
-    "너비는 1이상" {
-        val number = 0
+    "0이하의 수로는 높이를 생성할 수 없다" {
+        val wrongWidth2 = 0
 
         shouldThrowExactly<IllegalArgumentException> {
-            Width(number)
+            Width(wrongWidth2)
         }
-    }
-
-    "너비에 대한 행의 범위는 0부터 (너비 - 1)" {
-        val value = 10
-
-        Width(value).columnRange shouldBe 0..9
     }
 })

@@ -6,25 +6,19 @@ import io.kotest.matchers.shouldBe
 import minesweeper.domain.board.Height
 
 class HeightTest : StringSpec({
-    "입력 받은 숫자로 높이 생성" {
-        val number = 3
+    "높이를 입력 받으면 해당 값을 가진 Height가 생성된다" {
+        val height = 3
 
-        val height = Height(number)
+        val result = Height(3)
 
-        height.value shouldBe number
+        result.value shouldBe height
     }
 
-    "높이는 1이상" {
-        val number = 0
+    "0이하의 수로는 높이를 생성할 수 없다" {
+        val wrongHeight = 0
 
         shouldThrowExactly<IllegalArgumentException> {
-            Height(number)
+            Height(wrongHeight)
         }
-    }
-
-    "높이에 대한 열의 범위는 0부터 (높이 - 1)" {
-        val value = 10
-
-        Height(value).rowRange shouldBe 0..9
     }
 })

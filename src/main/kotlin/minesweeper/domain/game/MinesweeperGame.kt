@@ -1,43 +1,42 @@
 package minesweeper.domain.game
 
 import minesweeper.domain.board.MineBoard
+import minesweeper.domain.cell.Cell
+import minesweeper.domain.cell.MineCount
 import minesweeper.domain.position.Position
 
-data class MinesweeperGame(
+class MinesweeperGame(
     val board: MineBoard,
-    val positionToOpen: () -> Position,
+    private var gameResult: GameResult? = null,
 ) {
-    var result: GameResult? = null
-        private set
-
-    fun run() {
-        check(isEnd().not())
-        val position = positionToOpen()
+    fun open(position: Position): GameResult? {
         if (board.isMine(position)) {
-            result = GameResult.LOSS
-            return
+            gameResult = GameResult.LOSS
+            return gameResult
         }
         doOpen(position)
         if (board.isAllOpened()) {
-            result = GameResult.WIN
-            return
+            gameResult = GameResult.WIN
+            return gameResult
         }
+        return null
     }
 
-    fun isEnd() = result != null
+    fun isEnd(): Boolean = gameResult != null
 
     private fun doOpen(position: Position) {
-        if (board.isOpened(position)) return
-
         val cell = board.open(position)
-
-        if (cell.isZeroMineCount()) {
-            openAdjacentPositions(cell.position)
-        }
+        openNearPositionsIfZero(cell)
     }
 
-    private fun openAdjacentPositions(position: Position) {
-        val adjacentPositions = position.adjacentPositions.filter { board.isValidPosition(it) }
-        adjacentPositions.forEach { doOpen(it) }
+    private fun openNearPositionsIfZero(cell: Cell.Clear) {
+        if (cell.nearMineCount != MineCount.ZERO) return
+
+        cell.nearPositions.forEach { position ->
+            if (board.canOpen(position)) {
+                val openedCell = board.open(position)
+                openNearPositionsIfZero(openedCell)
+            }
+        }
     }
 }
