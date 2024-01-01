@@ -3,11 +3,13 @@ package domain.board
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeTypeOf
 import minesweeper.domain.board.EmptyBoard
 import minesweeper.domain.board.Height2
 import minesweeper.domain.board.MineBoard2
 import minesweeper.domain.board.MinePickedBoard
 import minesweeper.domain.board.Width2
+import minesweeper.domain.cell.Cell2
 import minesweeper.domain.position.Position2
 
 class MineBoard2Test : DescribeSpec({
@@ -86,6 +88,49 @@ class MineBoard2Test : DescribeSpec({
                 shouldThrowExactly<IllegalArgumentException> {
                     mineBoard.isMine(position)
                 }
+            }
+        }
+    }
+
+    describe("열수 있는 위치인지 확인") {
+        val mineBoard = MineBoard2.from(
+            MinePickedBoard.of(
+                emptyBoard = EmptyBoard.of(Height2(2), Width2(2)),
+                minePicker = MinePositionPickerMock(
+                    minePositions = setOf(Position2(0, 0))
+                )
+            )
+        )
+
+        context("보드 내, 열지 않은, 지뢰가 아닌 위치라면") {
+            val position = Position2(0, 1)
+            it("true를 반환한다") {
+                mineBoard.canOpen(position) shouldBe true
+            }
+        }
+
+        context("보드 내 지뢰가 아닌 위치지만 이미 열었다면") {
+            val position = Position2(1, 0)
+            val cell = mineBoard.open(position)
+            cell.shouldBeTypeOf<Cell2.Clear>()
+            cell.isOpened shouldBe true
+
+            it("false를 반환한다") {
+                mineBoard.canOpen(position) shouldBe false
+            }
+        }
+
+        context("지뢰 위치라면") {
+            val position = Position2(0, 0)
+            it("false를 반환한다") {
+                mineBoard.canOpen(position) shouldBe false
+            }
+        }
+
+        context("보드 내의 위치가 아니라면") {
+            val position = Position2(0, 3)
+            it("false를 반환한다") {
+                mineBoard.canOpen(position) shouldBe false
             }
         }
     }

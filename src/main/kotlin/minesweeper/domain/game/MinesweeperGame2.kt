@@ -1,6 +1,8 @@
 package minesweeper.domain.game
 
 import minesweeper.domain.board.MineBoard2
+import minesweeper.domain.cell.Cell2
+import minesweeper.domain.cell.MineCount2
 import minesweeper.domain.position.Position2
 
 class MinesweeperGame2(
@@ -13,6 +15,19 @@ class MinesweeperGame2(
             return gameResult
         }
         val cell = board.open(position)
+        openNearPositionsIfZero(cell)
         return null
+    }
+
+    private fun openNearPositionsIfZero(cell: Cell2.Clear) {
+        if (cell.nearMineCount != MineCount2.ZERO) return
+
+        cell.nearPositions.forEach { position ->
+            if (board.canOpen(position)) {
+                println("hello $cell $position")
+                val openedCell = board.open(position)
+                openNearPositionsIfZero(openedCell)
+            }
+        }
     }
 }

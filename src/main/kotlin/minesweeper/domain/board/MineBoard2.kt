@@ -16,6 +16,14 @@ class MineBoard2 private constructor(
     fun isMine(position: Position2): Boolean =
         findCell(position) is Cell2.Mine
 
+    fun canOpen(position: Position2): Boolean {
+        val cell = cells[position] ?: return false
+        return when (cell) {
+            is Cell2.Mine -> false
+            is Cell2.Clear -> cell.isOpened.not()
+        }
+    }
+
     private fun findCell(position: Position2): Cell2 =
         cells[position] ?: throw IllegalArgumentException("보드 내에 정의된 셀이 아닙니다")
 
