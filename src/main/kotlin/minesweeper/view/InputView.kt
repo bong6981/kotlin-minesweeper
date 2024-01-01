@@ -22,7 +22,7 @@ class InputView() : InputProvider {
         return readIntInput()
     }
 
-    override fun openPosition(): InputPosition {
+    override fun positionToOpen(): InputPosition {
         println()
         if (gameStarted.not()) {
             println(GAME_START)

@@ -1,5 +1,6 @@
 package minesweeper.controller
 
+import minesweeper.controller.InputPosition.Companion.toPosition
 import minesweeper.domain.board.EmptyBoard
 import minesweeper.domain.board.Height
 import minesweeper.domain.board.Height2
@@ -12,6 +13,7 @@ import minesweeper.domain.board.Width
 import minesweeper.domain.board.Width2
 import minesweeper.domain.board.mineBoard
 import minesweeper.domain.game.MinesweeperGame
+import minesweeper.domain.game.MinesweeperGame2
 import minesweeper.domain.position.Position
 import minesweeper.domain.position.RandomMinePositionPicker
 import minesweeper.domain.position.RandomPositionPicker
@@ -21,9 +23,9 @@ class MinesweeperController(
     private val outputProvider: OutputConsumer,
 ) {
     fun start() {
-        val board = createBoard()
-        val game = createGame(board)
-        runGame(game)
+        val board = createBoard2()
+        val game = MinesweeperGame2(board)
+        game.open(inputProvider.positionToOpen().toPosition())
     }
 
     private fun createBoard(): MineBoard {
@@ -31,23 +33,25 @@ class MinesweeperController(
         val width = inputProvider.width().let(::Width)
         val mineCount = inputProvider.mineCount().let(::MineTotal)
 
-        val height2 = inputProvider.height().let(::Height2)
-        val width2 = inputProvider.width().let(::Width2)
-        val emptyBoard = EmptyBoard.of(height2, width2)
-
-        val mineCount2 = inputProvider.mineCount().let(::MineTotal2)
-        val minePickedBoard = MinePickedBoard.of(emptyBoard, RandomMinePositionPicker(mineCount2))
-        val mineBoard = MineBoard2.from(minePickedBoard)
-
         return mineBoard(RandomPositionPicker()) {
             size(width * height)
             mineCount(mineCount)
         }
     }
 
+    private fun createBoard2(): MineBoard2 {
+        val height = inputProvider.height().let(::Height2)
+        val width = inputProvider.width().let(::Width2)
+        val emptyBoard = EmptyBoard.of(height, width)
+
+        val mineCount = inputProvider.mineCount().let(::MineTotal2)
+        val minePickedBoard = MinePickedBoard.of(emptyBoard, RandomMinePositionPicker(mineCount))
+        return MineBoard2.from(minePickedBoard)
+    }
+
     private fun createGame(board: MineBoard): MinesweeperGame =
         MinesweeperGame(board) {
-            inputProvider.openPosition().let {
+            inputProvider.positionToOpen().let {
                 Position(
                     row = it.row,
                     column = it.column

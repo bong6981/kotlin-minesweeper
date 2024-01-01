@@ -7,5 +7,5 @@ interface InputProvider {
 
     fun mineCount(): Int
 
-    fun openPosition(): InputPosition
+    fun positionToOpen(): InputPosition
 }
