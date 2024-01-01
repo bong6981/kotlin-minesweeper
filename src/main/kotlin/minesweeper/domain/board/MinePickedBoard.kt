@@ -8,7 +8,7 @@ class MinePickedBoard private constructor(
     val minePositions: Set<Position2>
 ) {
 
-    val mineCountByPosition: Map<Position2, Int> by lazy {
+    val mineCountByAllPosition: Map<Position2, Int> by lazy {
         val nearMineCountByPosition = minePositions
             .flatMap { it.nearPositions }
             .filter { it in allPositions }
@@ -17,6 +17,8 @@ class MinePickedBoard private constructor(
 
         allPositions.associateWith { nearMineCountByPosition[it] ?: 0 }
     }
+
+    fun isMine(position2: Position2) = position2 in minePositions
 
     companion object {
         fun of(emptyBoard: EmptyBoard, minePicker: MinePositionPicker): MinePickedBoard {

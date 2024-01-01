@@ -43,7 +43,7 @@ class MinePickedBoardTest : DescribeSpec({
             )
         )
 
-        val result: Map<Position2, Int> = minePickedBoard.mineCountByPosition
+        val result: Map<Position2, Int> = minePickedBoard.mineCountByAllPosition
 
         result shouldBe mapOf(
             Position2(0, 0) to 0,
@@ -66,5 +66,34 @@ class MinePickedBoardTest : DescribeSpec({
             Position2(3, 2) to 1,
             Position2(3, 3) to 2,
         )
+    }
+
+    describe("지뢰 위치인지 확인") {
+        val minePickedBoard = MinePickedBoard.of(
+            emptyBoard = EmptyBoard.of(Height2(2), Width2(2)),
+            minePicker = MinePositionPickerMock(
+                minePositions = setOf(
+                    Position2(0, 0),
+                )
+            )
+        )
+
+        context("지뢰 위치라면") {
+            val position = Position2(0, 0)
+            it("true가 반환된다") {
+                val result = minePickedBoard.isMine(position)
+
+                result shouldBe true
+            }
+        }
+
+        context("지뢰 위치가 아니라면") {
+            val position = Position2(1, 1)
+            it("false 반환된다") {
+                val result = minePickedBoard.isMine(position)
+
+                result shouldBe false
+            }
+        }
     }
 })

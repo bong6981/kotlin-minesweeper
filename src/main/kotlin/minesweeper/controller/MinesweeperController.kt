@@ -4,6 +4,7 @@ import minesweeper.domain.board.EmptyBoard
 import minesweeper.domain.board.Height
 import minesweeper.domain.board.Height2
 import minesweeper.domain.board.MineBoard
+import minesweeper.domain.board.MineBoard2
 import minesweeper.domain.board.MinePickedBoard
 import minesweeper.domain.board.MineTotal
 import minesweeper.domain.board.MineTotal2
@@ -36,6 +37,7 @@ class MinesweeperController(
 
         val mineCount2 = inputProvider.mineCount().let(::MineTotal2)
         val minePickedBoard = MinePickedBoard.of(emptyBoard, RandomMinePositionPicker(mineCount2))
+        val mineBoard = MineBoard2.from(minePickedBoard)
 
         return mineBoard(RandomPositionPicker()) {
             size(width * height)
