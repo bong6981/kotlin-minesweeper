@@ -16,6 +16,10 @@ class MinesweeperGame2(
         }
         val cell = board.open(position)
         openNearPositionsIfZero(cell)
+        if (board.isAllOpened()) {
+            gameResult = GameResult.WIN
+            return gameResult
+        }
         return null
     }
 

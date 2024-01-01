@@ -134,4 +134,41 @@ class MineBoard2Test : DescribeSpec({
             }
         }
     }
+
+    describe("모든 일반 셀을 열었는지 확인") {
+        context("모든 일반 셀을 열었다면") {
+            val mineBoard = MineBoard2.from(
+                MinePickedBoard.of(
+                    emptyBoard = EmptyBoard.of(Height2(2), Width2(2)),
+                    minePicker = MinePositionPickerMock(
+                        minePositions = setOf(Position2(0, 0))
+                    )
+                )
+            )
+            mineBoard.open(Position2(0, 1))
+            mineBoard.open(Position2(1, 0))
+            mineBoard.open(Position2(1, 1))
+
+            it("true가 반환된다") {
+                mineBoard.isAllOpened() shouldBe true
+            }
+        }
+
+        context("열지 않은 일반 셀이 하나라도 있다면") {
+            val mineBoard = MineBoard2.from(
+                MinePickedBoard.of(
+                    emptyBoard = EmptyBoard.of(Height2(2), Width2(2)),
+                    minePicker = MinePositionPickerMock(
+                        minePositions = setOf(Position2(0, 0))
+                    )
+                )
+            )
+            mineBoard.open(Position2(0, 1))
+            mineBoard.open(Position2(1, 0))
+
+            it("false 가 반환된다") {
+                mineBoard.isAllOpened() shouldBe false
+            }
+        }
+    }
 })

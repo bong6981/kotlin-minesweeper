@@ -3,6 +3,7 @@ package domain.game
 import domain.board.MinePositionPickerMock
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeTypeOf
 import minesweeper.domain.board.EmptyBoard
@@ -63,7 +64,7 @@ class MinesweeperGame2Test : DescribeSpec({
             )
             val positionToOpen = Position2(0, 0)
 
-            MinesweeperGame2(board).open(positionToOpen)
+            val result = MinesweeperGame2(board).open(positionToOpen)
 
             /*
             (열림) (열림) (열림) (1)
@@ -103,6 +104,10 @@ class MinesweeperGame2Test : DescribeSpec({
                     cell.isOpened shouldBe false
                 }
             }
+
+            it("열리지 않은 셀이 있으므로 GameResult 값은 조회되지 않는다") {
+                result.shouldBeNull()
+            }
         }
 
         context("인접 지뢰수가 0이 아닌 일반 셀을 열면") {
@@ -126,7 +131,7 @@ class MinesweeperGame2Test : DescribeSpec({
             )
             val positionToOpen = Position2(0, 3)
 
-            MinesweeperGame2(board).open(positionToOpen)
+            val result = MinesweeperGame2(board).open(positionToOpen)
 
             it("해당 셀만 열린다") {
                 val unopenedPositions = setOf(
@@ -155,6 +160,10 @@ class MinesweeperGame2Test : DescribeSpec({
                     cell.isOpened shouldBe false
                 }
             }
+
+            it("열리지 않은 셀이 있으므로 GameResult 값은 조회되지 않는다") {
+                result.shouldBeNull()
+            }
         }
 
         context("이미 열었던 셀을 열면") {
@@ -179,6 +188,32 @@ class MinesweeperGame2Test : DescribeSpec({
                 shouldThrowExactly<IllegalStateException> {
                     game.open(positionToOpen)
                 }
+            }
+        }
+
+        context("모든 일반 셀을 열면") {
+            /*
+            (1) (1)
+            (1) (*)
+            */
+            val board = MineBoard2.from(
+                MinePickedBoard.of(
+                    emptyBoard = EmptyBoard.of(Height2(2), Width2(2)),
+                    minePicker = MinePositionPickerMock(
+                        setOf(
+                            Position2(1, 1),
+                        )
+                    )
+                )
+            )
+            val game = MinesweeperGame2(board)
+            game.open(Position2(0, 0))
+            game.open(Position2(0, 1))
+
+            it("승리 결과가 반환된다") {
+                val result = game.open(Position2(1, 0))
+
+                result shouldBe GameResult.WIN
             }
         }
     }

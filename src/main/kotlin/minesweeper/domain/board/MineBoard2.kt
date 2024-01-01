@@ -24,6 +24,9 @@ class MineBoard2 private constructor(
         }
     }
 
+    fun isAllOpened(): Boolean =
+        cells.values.none { it is Cell2.Clear && it.isOpened.not() }
+
     private fun findCell(position: Position2): Cell2 =
         cells[position] ?: throw IllegalArgumentException("보드 내에 정의된 셀이 아닙니다")
 
